@@ -1,5 +1,7 @@
 # PARK / SHIFT
 
+**[Play online](https://andreashxc.github.io/park-shift-game/)** — runs in your browser; no installation required.
+
 A small, fully procedural 3D parking simulator for the browser. Choose a car, learn its turning circle, and work through six parking challenges—from a quiet practice lot to a rainy night shift.
 
 ![PARK / SHIFT running in the browser](docs/images/gameplay-desktop.png)
@@ -43,7 +45,7 @@ npm test
 npm run preview
 ```
 
-`npm test` runs the TypeScript and Vite production build. It is a build check, not a separate gameplay unit-test suite. Development and preview servers bind to `127.0.0.1` by default. The production output is a static site in `dist/`; assets use a relative base for deployment under a subdirectory.
+`npm test` runs the TypeScript and Vite production build. It is a build check, not a separate gameplay unit-test suite. Development and preview servers bind to `127.0.0.1` by default. The production output is a static site in `dist/`; the Pages build uses the project subdirectory base and local development uses the site root.
 
 ## Controls
 
@@ -78,3 +80,7 @@ Created by **Andrew Manuilov** ([andreashxc](https://github.com/andreashxc)). Th
 Original project: [andreashxc/park-shift-game](https://github.com/andreashxc/park-shift-game).
 
 Original work is licensed under [Apache-2.0](LICENSE). Retain the applicable attribution and [NOTICE](NOTICE) when distributing it. Third-party components retain their separate licenses; see [AUTHORS](AUTHORS.md), [THIRD_PARTY_NOTICES](THIRD_PARTY_NOTICES.md) and [preparation changes](MODIFICATIONS.md).
+
+## GitHub Pages
+
+The Build, test and deploy workflow verifies the source, packages only dist/ and deploys it to GitHub Pages on pushes to main. Pull requests run checks without deployment. Static assets, fonts and image portraits use the project base path. No custom domain is configured by this project.
