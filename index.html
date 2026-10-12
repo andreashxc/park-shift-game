@@ -1,0 +1,156 @@
+<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no" />
+    <meta name="theme-color" content="#071014" />
+    <meta name="description" content="PARK / SHIFT — атмосферный 3D-симулятор парковки с разными автомобилями, условиями и режимами помощи." />
+    <meta property="og:title" content="PARK / SHIFT — 3D Parking Simulator" />
+    <meta property="og:description" content="Выбери машину, освой шесть сценариев и припаркуйся идеально — с подсказками или без." />
+    <meta property="og:type" content="website" />
+    <link rel="icon" href="./favicon.svg" />
+    <title>PARK / SHIFT — 3D Parking Simulator</title>
+  </head>
+  <body>
+    <div id="app">
+      <canvas id="game-canvas" aria-label="Трёхмерная сцена парковочного симулятора"></canvas>
+      <div id="rain-layer" aria-hidden="true"></div>
+
+      <header class="brand" aria-label="PARK SHIFT">
+        <span class="brand-mark">P/</span>
+        <span>PARK <b>SHIFT</b></span>
+      </header>
+
+      <button id="sound-toggle" class="icon-button sound-toggle" aria-label="Включить или выключить звук" title="Звук">♪</button>
+
+      <main id="garage-screen" class="screen garage-screen active" aria-label="Гараж">
+        <section class="hero-copy">
+          <p class="eyebrow">URBAN DRIVING ACADEMY</p>
+          <h1>Точное движение.<br /><em>Чистая парковка.</em></h1>
+          <p class="hero-description">Шесть заданий, три характера и один свободный слот. От спокойной учебной площадки до тесного паркинга под дождём.</p>
+          <div class="garage-stats" aria-label="Особенности игры">
+            <span><b>06</b> сценариев</span>
+            <span><b>03</b> автомобиля</span>
+            <span><b>∞</b> попыток</span>
+          </div>
+        </section>
+
+        <section class="setup-panel glass-panel" aria-label="Настройка заезда">
+          <div class="step-heading"><span>01</span><div><small>МАШИНА</small><h2 id="selected-car-name">Metro Mini</h2></div></div>
+          <div id="car-picker" class="option-strip car-picker" role="radiogroup" aria-label="Выбор автомобиля"></div>
+          <div id="car-specs" class="car-specs"></div>
+
+          <div class="step-heading compact"><span>02</span><div><small>СЦЕНАРИЙ</small><h2 id="selected-level-name">Базовая разметка</h2></div></div>
+          <div id="level-picker" class="level-picker" role="radiogroup" aria-label="Выбор сценария"></div>
+
+          <div class="mode-row">
+            <div>
+              <small>РЕЖИМ</small>
+              <strong id="assist-label">Учебный</strong>
+            </div>
+            <button id="assist-toggle" class="segmented" aria-pressed="true"><span>С подсказками</span><i></i></button>
+          </div>
+          <button id="start-button" class="primary-button"><span>Начать заезд</span><b>↗</b></button>
+          <p class="controls-note">WASD / стрелки · R передача · C камера · H подсказки</p>
+        </section>
+      </main>
+
+      <section id="game-screen" class="screen game-screen" aria-label="Заезд">
+        <div id="cockpit-overlay" class="cockpit-overlay" aria-hidden="true">
+          <i class="cockpit-pillar cockpit-pillar-left"></i>
+          <i class="cockpit-pillar cockpit-pillar-right"></i>
+          <div class="cockpit-dashboard">
+            <span>PARK / SHIFT</span>
+            <i class="cockpit-wheel"></i>
+          </div>
+        </div>
+
+        <div class="objective-card glass-panel">
+          <div class="objective-index" id="objective-index">01</div>
+          <div>
+            <small>ЗАДАЧА</small>
+            <strong id="objective-title">Займите выделенное место</strong>
+            <p id="objective-hint">Двигайтесь плавно и остановитесь внутри контура.</p>
+          </div>
+        </div>
+
+        <div class="run-stats glass-panel">
+          <div><small>ВРЕМЯ</small><strong id="timer">00:00.0</strong></div>
+          <div><small>ШТРАФ</small><strong id="penalty">0</strong></div>
+          <button id="pause-button" class="icon-button" aria-label="Пауза">Ⅱ</button>
+        </div>
+
+        <div id="rear-view-monitor" class="rear-view-monitor" role="img" aria-label="Камера заднего вида" aria-hidden="true">
+          <span><b>R</b> ЗАДНИЙ ВИД</span>
+          <i>● LIVE</i>
+        </div>
+
+        <div id="sensor-banner" class="sensor-banner glass-panel" role="status">
+          <span id="sensor-icon">◒</span><div><small>ПАРКТРОНИК</small><strong id="sensor-text">Свободно</strong></div>
+        </div>
+
+        <div class="dashboard glass-panel" aria-label="Панель приборов">
+          <div class="gear-stack" aria-label="Передача"><button data-gear="1" class="active" aria-label="Передача D, вперёд">D</button><button data-gear="-1" aria-label="Передача R, назад">R</button></div>
+          <div class="speedometer"><strong id="speed">0</strong><small>КМ/Ч</small></div>
+          <div class="steering-meter"><small>РУЛЬ</small><div><i id="steering-indicator"></i></div></div>
+          <div class="park-progress"><small>ТОЧНОСТЬ</small><strong id="accuracy">—</strong></div>
+        </div>
+
+        <div class="game-actions">
+          <button id="camera-button" class="hud-button" aria-label="Сменить камеру"><span>⌖</span><small>КАМЕРА</small></button>
+          <button id="hint-button" class="hud-button active" aria-label="Переключить подсказки"><span>◇</span><small>ПОМОЩЬ</small></button>
+        </div>
+
+        <div id="toast" class="toast" role="status" aria-live="polite"></div>
+
+        <div id="mobile-controls" class="mobile-controls" aria-label="Сенсорное управление">
+          <div class="steer-controls">
+            <button data-control="left" aria-label="Повернуть налево">←</button>
+            <button data-control="right" aria-label="Повернуть направо">→</button>
+          </div>
+          <div class="pedal-controls">
+            <button data-control="brake" class="brake" aria-label="Тормоз"><span></span><small>ТОРМОЗ</small></button>
+            <button data-control="throttle" class="throttle" aria-label="Газ"><span></span><small>ГАЗ</small></button>
+          </div>
+          <div class="mobile-gear-control" role="group" aria-label="Выбор передачи">
+            <button data-gear="1" class="active" aria-label="Передача D, вперёд"><strong>D</strong><small>ВПЕРЁД</small></button>
+            <button data-gear="-1" aria-label="Передача R, задний ход"><strong>R</strong><small>НАЗАД</small></button>
+          </div>
+        </div>
+      </section>
+
+      <section id="pause-modal" class="modal" role="dialog" aria-modal="true" aria-labelledby="pause-title">
+        <div class="modal-card glass-panel">
+          <p class="eyebrow">ЗАЕЗД ПРИОСТАНОВЛЕН</p>
+          <h2 id="pause-title">Пауза</h2>
+          <div class="key-grid"><span><kbd>W S</kbd> газ / тормоз</span><span><kbd>A D</kbd> поворот</span><span><kbd>R</kbd> передача</span><span><kbd>C</kbd> камера</span></div>
+          <button id="resume-button" class="primary-button"><span>Продолжить</span><b>→</b></button>
+          <button id="restart-button" class="secondary-button">Начать заново</button>
+          <button id="garage-button" class="text-button">Вернуться в гараж</button>
+        </div>
+      </section>
+
+      <section id="result-modal" class="modal" role="dialog" aria-modal="true" aria-labelledby="result-title">
+        <div class="modal-card result-card glass-panel">
+          <p id="result-eyebrow" class="eyebrow">ПАРКОВКА ЗАВЕРШЕНА</p>
+          <h2 id="result-title">Чистая работа.</h2>
+          <div id="result-stars" class="stars" aria-label="Результат: три звезды">★ ★ ★</div>
+          <strong id="result-score" class="result-score">920</strong>
+          <small class="score-label">ИТОГОВЫЙ СЧЁТ</small>
+          <div class="result-metrics">
+            <div><small>ТОЧНОСТЬ</small><strong id="result-accuracy">96%</strong></div>
+            <div><small>ВРЕМЯ</small><strong id="result-time">0:42</strong></div>
+            <div><small>КОНТАКТЫ</small><strong id="result-hits">0</strong></div>
+          </div>
+          <p id="best-badge" class="best-badge">НОВЫЙ ЛИЧНЫЙ РЕКОРД</p>
+          <button id="next-button" class="primary-button"><span>Следующий сценарий</span><b>→</b></button>
+          <button id="retry-button" class="secondary-button">Повторить заезд</button>
+          <button id="result-garage-button" class="text-button">В гараж</button>
+        </div>
+      </section>
+
+      <div class="rotate-device" role="status">Поверните телефон горизонтально — так парковаться удобнее <b>↻</b></div>
+    </div>
+    <script type="module" src="/src/main.ts"></script>
+  </body>
+</html>

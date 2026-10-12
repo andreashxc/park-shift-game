@@ -1,0 +1,78 @@
+# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
+
+# dependencies
+/node_modules
+/.pnp
+.pnp.*
+.yarn/*
+!.yarn/patches
+!.yarn/plugins
+!.yarn/releases
+!.yarn/versions
+
+# testing
+/coverage
+
+# next.js
+/.next/
+/.vinext/
+/out/
+
+# misc
+.DS_Store
+*.pem
+
+# debug
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnpm-debug.log*
+
+# env files (can opt-in for committing if needed)
+.env*
+
+# vercel
+.vercel
+
+# typescript
+next-env.d.ts
+/dist/
+/.wrangler/
+/outputs/
+/work/
+/output/playwright/
+/.playwright-cli/
+
+# Unused files left by the original Sites starter (the game is a static Vite SPA)
+/app/
+/build/
+/db/
+/drizzle/
+/examples/
+/tests/
+/worker/
+/drizzle.config.ts
+/eslint.config.mjs
+/next.config.ts
+/postcss.config.mjs
+/package 2.json
+/tsconfig 2.json
+/vite.config 2.ts
+/README [0-9]*.md
+/public/file.svg
+/public/globe.svg
+/public/window.svg
+/.openai/
+
+# Local state and release audit artifacts
+.env
+.env.*
+!.env.example
+*.log
+.DS_Store
+private-audit/
+output/
+xcuserdata/
+*.xcuserstate
+DerivedData/
+.build/
